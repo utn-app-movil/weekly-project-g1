@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">semana4-ever</string>
+
+    <!--Strings para los textos de los botones-->
+    <string name="ShowMsg2Main">Mostrar Mensaje 2</string>
+    <string name="OpenActivityMain">Abrir Segunda Pantalla</string>
+    <string name="ShowMsg1">Mostrar Mensaje 1</string>
+
+    <!--Strings para los mensajes-->
+    <string name="Msg1">Mensaje del primer botòn</string>
+    <string name="Msg2">El dato se ha guardado</string>
+    <string name="UndoAction">Deshacer</string>
+    <string name="UndoMsg">La acciòn ha sido cancelada</string>
+    <string name="BackText">Atrás</string>
+</resources>

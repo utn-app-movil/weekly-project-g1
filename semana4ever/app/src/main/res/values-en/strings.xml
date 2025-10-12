@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">semana4-ever</string>
+    <string name="ShowMsg2Main">Show Msg 2</string>
+    <string name="OpenActivityMain">Open Second Screen</string>
+    <string name="ShowMsg1">Sho2 Msg 1</string>
+    <string name="Msg1">My first message</string>
+    <string name="Msg2">The data has been saved.</string>
+    <string name="UndoAction">Undo</string>
+    <string name="UndoMsg">The action has been cancelled.</string>
+    <string name="BackText">Back</string>
+</resources>
