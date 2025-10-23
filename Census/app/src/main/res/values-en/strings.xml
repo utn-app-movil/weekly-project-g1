@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Census</string>
+    <string name="ErrorMsgAdd">Error when adding the information.</string>
+    <string name="ErrorMsgUpdate">Error when updating the information.</string>
+    <string name="ErrorMsgRemove">Error when removing the information.</string>
+    <string name="ErrorMsgGetAll">Error when getting the data list.</string>
+    <string name="ErrorMsgGetById">Error when getting a specific data.</string>
+    <string name="MsgDataNoFound">The data was not found.</string>
+</resources>
