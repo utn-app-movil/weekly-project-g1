@@ -1,6 +1,8 @@
 package cr.ac.utn.census
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,5 +18,11 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val btnPerson = findViewById<Button>(R.id.btnPerson_main)
+        btnPerson.setOnClickListener(View.OnClickListener{ view->
+            Util.Util.openActivity(this
+                , PersonActivity::class.java)
+        })
     }
 }

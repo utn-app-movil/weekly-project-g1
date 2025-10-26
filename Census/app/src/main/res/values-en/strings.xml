@@ -7,4 +7,16 @@
     <string name="ErrorMsgGetAll">Error when getting the data list.</string>
     <string name="ErrorMsgGetById">Error when getting a specific data.</string>
     <string name="MsgDataNoFound">The data was not found.</string>
+    <string name="btnTextPerson_main">Add New person</string>
+    <string name="TextID">ID</string>
+    <string name="TextName">Name</string>
+    <string name="TextFLastName">First Lastname</string>
+    <string name="TextSLastname">Second Lastname</string>
+    <string name="TextEmail">Email</string>
+    <string name="TextPhone">Phone</string>
+    <string name="TextBirthdate">Birthdate</string>
+    <string name="TextProvince">Province</string>
+    <string name="TextState">State</string>
+    <string name="TextDistrict">District</string>
+    <string name="TextAddress">Address</string>
 </resources>
