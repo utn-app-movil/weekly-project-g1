@@ -32,29 +32,19 @@ class PersonController {
         }
     }
 
-    fun getById(id: String): Person{
+    fun getById(id: String): Person?{
         try {
-            val result = dataManager.getById(id)
-            if (result == null){
-                throw Exception(context
-                    .getString(R.string.MsgDataNoFound))
-            }
-            return result
+            return dataManager.getById(id)
         }catch (e: Exception){
             throw Exception(context
                 .getString(R.string.ErrorMsgGetById))
         }
     }
 
-    fun getByFullName(fullname: String): Person{
+    fun getByFullName(fullname: String): Person?{
         try {
-            val result = dataManager.
+            return dataManager.
                 getByFullName(fullname)
-            if (result == null){
-                throw Exception(context
-                    .getString(R.string.MsgDataNoFound))
-            }
-            return result
         }catch (e: Exception){
             throw Exception(context
                 .getString(R.string.ErrorMsgGetById))

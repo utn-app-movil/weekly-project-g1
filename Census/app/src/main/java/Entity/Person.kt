@@ -1,7 +1,7 @@
 package Entity
 
 import android.graphics.Bitmap
-import java.util.Date
+import java.time.LocalDate
 
 class Person {
     private var id: String=""
@@ -10,7 +10,7 @@ class Person {
     private var sLastName: String=""
     private var phone: Int=0
     private var email: String=""
-    private lateinit var birthday: Date
+    private lateinit var birthday: LocalDate
     private lateinit var province: Province
     private var state: String=""
     private var district: String=""
@@ -23,7 +23,7 @@ class Person {
 
     constructor(id: String, name: String, flastname: String
             , slastname: String, phone: Int, email: String
-            , birthday: Date, province: Province, state: String
+            , birthday: LocalDate, province: Province, state: String
             , district: String, address: String, latitude: Int
             , longitude: Int, photo: Bitmap?)
     {
@@ -67,7 +67,7 @@ class Person {
         get() = this.email
         set(value) {this.email=value}
 
-    var Birthday: Date
+    var Birthday: LocalDate
         get() = this.birthday
         set(value) {this.birthday=value}
 

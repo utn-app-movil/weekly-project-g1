@@ -30,10 +30,17 @@
 
             <EditText
                 android:id="@+id/txtId_person"
-                android:layout_width="260dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/btnSearchId_person"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                app:srcCompat="@android:drawable/ic_search_category_default" />
+
         </TableRow>
 
         <TableRow
@@ -100,12 +107,24 @@
                 android:layout_height="wrap_content"
                 android:text="@string/TextBirthdate" />
 
-            <EditText
-                android:id="@+id/txtBirthdate_person"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="date" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:id="@+id/lbBirthdfate_person"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:id="@+id/btnSelectDate_person"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    app:srcCompat="@android:drawable/ic_menu_today" />
+
+            </TableRow>
+
         </TableRow>
 
         <TableRow
