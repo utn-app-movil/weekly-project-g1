@@ -3,8 +3,14 @@ package cr.ac.utn.census
 import Controller.PersonController
 import Entity.Person
 import Entity.Province
+import Interfaces.IActions
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
@@ -19,7 +25,7 @@ import androidx.core.view.WindowInsetsCompat
 import java.time.LocalDate
 import java.util.Calendar
 
-class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
+class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, IActions {
     private lateinit var txtId: EditText
     private lateinit var txtName: EditText
     private lateinit var txtFLastName: EditText
@@ -36,6 +42,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private var month = 0
     private var day = 0
     private lateinit var personController: PersonController
+    private lateinit var menuitemDelete: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +82,52 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
         val btnSave = findViewById<Button>(R.id.btnSave_person)
         btnSave.setOnClickListener(View.OnClickListener{view ->
-            savePerson()
+            Save()
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_crud, menu)
+        menuitemDelete = menu!!.findItem(R.id.mnuDelete)
+        if (isEditMode)
+            menuitemDelete.isVisible = true
+        else
+            menuitemDelete.isVisible =false
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.mnuSave -> {
+                if (isEditMode){
+
+                }
+                Save()
+                true
+            }
+            R.id.mnuDelete -> {
+                showDialogCondition({ deleteContact() })
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showDialogCondition(callback: () ->  Unit){
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage("Desea eliminar la persona?")
+            .setCancelable(false)
+            .setPositiveButton("Si", DialogInterface.OnClickListener{
+                    dialog, id -> callback()
+            })
+            .setNegativeButton("No", DialogInterface.OnClickListener {
+                    dialog, id -> dialog.cancel()
+            })
+
+        val alert = dialogBuilder.create()
+        alert.setTitle("Titulo del dialog")
+        alert.show()
     }
 
     fun searchPerson(id: String){
@@ -121,7 +172,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         txtState.setText("")
         txtDistrict.setText("")
         txtAddress.setText("")
-        //invalidateOptionsMenu()
+        invalidateOptionsMenu()
     }
 
     private fun ResetDate(){
@@ -156,7 +207,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 && dateparse != null
     }
 
-    fun savePerson(){
+    override fun Save(){
         try {
             if (isValidatedData()){
                 if (personController.getById(txtId.text.toString()) != null && !isEditMode){
@@ -196,5 +247,9 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             Toast.makeText(this, e.message.toString()
                 , Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun deleteContact(): Unit{
+        cleanScreen()
     }
 }
