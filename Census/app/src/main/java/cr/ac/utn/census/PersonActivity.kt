@@ -91,7 +91,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 txtSLastName.setText(person.SLastName)
                 txtEmail.setText(person.Email)
                 txtPhone.setText(person.Phone.toString())
-                lbBirthdate.setText(person.Birthday.toString())
+                lbBirthdate.setText(getDateFormatString(person.Birthday.dayOfMonth, person.Birthday.month.value, person.Birthday.year, ))
                 txtProvince.setText(person.Province.Name)
                 txtState.setText(person.State)
                 txtDistrict.setText(person.District)
@@ -136,13 +136,16 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         datePickerDialog.show()
     }
 
+    fun getDateFormatString(dayOfMonth: Int, monthValue: Int, yearValue: Int): String{
+        return "${if (dayOfMonth < 10) "0" else "" }$dayOfMonth/${if (monthValue < 10) "0" else "" }$monthValue/$yearValue"
+    }
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         // Month is 0-indexed in Calendar, so add 1 for display
-        val selectedDate = "$dayOfMonth/${month + 1}/$year"
-        lbBirthdate.text = selectedDate
+        lbBirthdate.text = getDateFormatString(dayOfMonth, month+1, year)
     }
 
     fun isValidatedData(): Boolean{
+        val dateparse= Util.Util.parseStringToDateModern(lbBirthdate.text.toString(), "dd/MM/yyyy")
         return txtId.text.trim().isNotEmpty() && txtName.text.trim().isNotEmpty()
                 && txtFLastName.text.trim().isNotEmpty() && txtSLastName.text.trim().isNotEmpty()
                 && txtEmail.text.trim().isNotEmpty() && lbBirthdate.text.trim().isNotEmpty()
@@ -150,7 +153,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 && txtDistrict.text.trim().isNotEmpty() && txtAddress.text.trim().isNotEmpty()
                 && (txtPhone.text.trim().isNotEmpty() && txtPhone.text.trim().length >= 8
                     && txtPhone.text.toString()?.toInt()!! != null && txtPhone.text.toString().trim() != "0")
-                && Util.Util.parseStringToDateModern(lbBirthdate.text.toString(), "dd/MM/yyyy") != null
+                && dateparse != null
     }
 
     fun savePerson(){
