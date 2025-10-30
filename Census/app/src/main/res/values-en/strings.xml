@@ -26,4 +26,10 @@
     <string name="TextSaveActionQuestion">Are you sure to save the information?</string>
     <string name="MsgMissingData">Please check the missing data.</string>
     <string name="MsgDuplicateData">No possible to be executed. Existing duplicate data.</string>
+    <string name="TextSave">Save</string>
+    <string name="TextDelete">Delete</string>
+    <string name="TextCancel">Cancel</string>
+    <string name="TextYes">Yes</string>
+    <string name="TextNo">No</string>
+    <string name="TextTitleDialogQuestion">Question...</string>
 </resources>

@@ -25,4 +25,10 @@
     <string name="TextSaveActionQuestion">Desea guardar la información?</string>
     <string name="MsgMissingData">Faltan datos por favor revisar.</string>
     <string name="MsgDuplicateData">Acción no ejecutada, la información ya existe.</string>
+    <string name="TextSave">Guardar</string>
+    <string name="TextDelete">Eliminar</string>
+    <string name="TextCancel">Cancelar</string>
+    <string name="TextYes">Si</string>
+    <string name="TextNo">No</string>
+    <string name="TextTitleDialogQuestion">Pregunta...</string>
 </resources>

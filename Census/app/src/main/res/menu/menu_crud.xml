@@ -5,17 +5,17 @@
     <item
         android:id="@+id/mnuSave"
         android:icon="@android:drawable/ic_menu_save"
-        android:title="Save"
+        android:title="@string/TextSave"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/mnuDelete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Item"
+        android:title="@string/TextDelete"
         android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/mnuCancel"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        android:title="Item"
+        android:title="@string/TextCancel"
         app:showAsAction="ifRoom" />
 </menu>
