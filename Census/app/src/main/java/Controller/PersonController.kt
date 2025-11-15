@@ -32,6 +32,8 @@ class PersonController {
         }
     }
 
+    fun getPeople() = dataManager.getAll()
+
     fun getById(id: String): Person?{
         try {
             return dataManager.getById(id)

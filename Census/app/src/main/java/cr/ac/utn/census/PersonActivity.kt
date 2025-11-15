@@ -3,8 +3,15 @@ package cr.ac.utn.census
 import Controller.PersonController
 import Entity.Person
 import Entity.Province
+import Util.EXTRA_MESSAGE_PERSONID
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,12 +20,16 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -34,6 +45,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var txtState: EditText
     private lateinit var txtDistrict: EditText
     private lateinit var txtAddress: EditText
+    private lateinit var imgPhoto: ImageView
     private lateinit var personController: PersonController
     private var isEditMode: Boolean= false
     private var day: Int=0
@@ -43,6 +55,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_person)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -64,8 +77,12 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         txtState= findViewById<EditText>(R.id.txtState_person)
         txtDistrict= findViewById<EditText>(R.id.txtDistrict_person)
         txtAddress= findViewById<EditText>(R.id.txtAddress_person)
+        imgPhoto = findViewById<ImageView>(R.id.imgPhoto)
 
         resetDate()
+
+        val personId = intent.getStringExtra(EXTRA_MESSAGE_PERSONID)
+        if (personId != null && personId.trim().length > 0) searchPerson(personId)
 
         val btnSelectDate = findViewById<ImageButton>(R.id.btnSelectDate_person)
         btnSelectDate.setOnClickListener(View.OnClickListener{view ->
@@ -75,6 +92,11 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         val btnSearch = findViewById<ImageButton>(R.id.btnSearchId_person)
         btnSearch.setOnClickListener(View.OnClickListener{view ->
             searchPerson(txtId.text.trim().toString())
+        })
+
+        val btnSelectPhoto = findViewById<ImageButton>(R.id.btnSelectPicture)
+        btnSelectPhoto.setOnClickListener(View.OnClickListener{view ->
+            takePhoto()
         })
     }
 
@@ -154,7 +176,8 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 year = person.Birthday.year
                 month = person.Birthday.month.value - 1
                 day = person.Birthday.dayOfMonth
-                menuItemDelete.isVisible = true
+                //menuItemDelete.isVisible = true
+                imgPhoto.setImageBitmap(person.Photo)
             }else{
                 Toast.makeText(this, getString(R.string.MsgDataNoFound),
                     Toast.LENGTH_LONG).show()
@@ -195,6 +218,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         txtState.setText("")
         txtDistrict.setText("")
         txtAddress.setText("")
+        imgPhoto.setImageBitmap(null)
         invalidateOptionsMenu()
     }
 
@@ -213,6 +237,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                     person.SLastName = txtSLastName.text.toString()
                     person.Email = txtEmail.text.toString()
                     person.Phone = txtPhone.text.toString().toInt()
+                    person.Photo = (imgPhoto?.drawable as BitmapDrawable).bitmap
                     val bDateParse = Util.Util.parseStringToDateModern(lbBirthdate.text.toString(),
                         "dd/MM/yyyy")
                     person.Birthday = LocalDate.of(bDateParse?.year!!, bDateParse.month.value
@@ -254,5 +279,43 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             Toast.makeText(this, e.message.toString()
                 , Toast.LENGTH_LONG).show()
         }
+    }
+
+    //Here start the methods to select a phone from the camera or gallery
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+        if (success) {
+            // Image captured successfully, handle the result (e.g., display it in an ImageView)
+            // The image is typically saved to the URI provided in the launch() call.
+        } else {
+            // Image capture failed or was cancelled
+        }
+    }
+
+    private val cameraPreviewLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+        if (bitmap != null) {
+            imgPhoto.setImageBitmap(bitmap)
+        } else {
+            // Image capture failed or was cancelled
+        }
+    }
+
+    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            // Handle the selected image URI here
+            data?.data?.let { imageUri ->
+                imgPhoto.setImageURI(imageUri)
+            }
+        }
+    }
+
+    fun takePhoto(){
+        cameraPreviewLauncher.launch(null)
+    }
+
+    fun selectPhoto(){
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        intent.type = "image/*"
+        selectImageLauncher.launch(intent)
     }
 }

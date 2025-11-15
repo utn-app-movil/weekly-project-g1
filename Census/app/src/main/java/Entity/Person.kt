@@ -99,5 +99,5 @@ class Person {
         get() = this.photo
         set(value) {this.photo=value}
 
-    fun FullName() = "$this.name $this.fLastName $this.sLastName"
+    fun FullName() = "$Name $FLastName $SLastName"
 }

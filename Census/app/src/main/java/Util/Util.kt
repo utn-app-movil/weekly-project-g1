@@ -12,12 +12,14 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
+const val EXTRA_MESSAGE_PERSONID = "cr.ac.utn.census.PersonId"
+
 class Util {
     companion object{
         fun openActivity(context: Context
-                         , objClass: Class<*>){
+                         , objClass: Class<*>, extraName: String="", value: String?=null){
             val intent= Intent(context
-                    , objClass)
+                    , objClass).apply { putExtra(extraName, value)}
             context.startActivity(intent)
         }
 
