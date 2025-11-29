@@ -46,4 +46,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+
+    // Lifecycle components (for viewModelScope/lifecycleScope)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0") // Check for latest version
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 }

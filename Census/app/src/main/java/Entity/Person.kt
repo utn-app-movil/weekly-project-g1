@@ -11,7 +11,7 @@ class Person {
     private var phone: Int=0
     private var email: String=""
     private lateinit var birthday: LocalDate
-    private lateinit var province: Province
+    private lateinit var province: DTOProvince
     private var state: String=""
     private var district: String=""
     private var address: String=""
@@ -23,7 +23,7 @@ class Person {
 
     constructor(id: String, name: String, flastname: String
             , slastname: String, phone: Int, email: String
-            , birthday: LocalDate, province: Province, state: String
+            , birthday: LocalDate, province: DTOProvince, state: String
             , district: String, address: String, latitude: Int
             , longitude: Int, photo: Bitmap?)
     {
@@ -71,7 +71,7 @@ class Person {
         get() = this.birthday
         set(value) {this.birthday=value}
 
-    var Province: Province
+    var Province: DTOProvince
         get() = this.province
         set(value) {this.province=value}
 

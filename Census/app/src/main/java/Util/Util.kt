@@ -68,5 +68,9 @@ class Util {
             alert.setTitle(context.getString(R.string.TextTitleDialogQuestion))
             alert.show()
         }
+
+        fun getDateFormatString(dayOfMonth: Int, monthValue: Int, yearValue: Int): String{
+            return "${if (dayOfMonth < 10) "0" else ""}$dayOfMonth/${if (monthValue < 10) "0" else ""}$monthValue/$yearValue"
+        }
     }
 }

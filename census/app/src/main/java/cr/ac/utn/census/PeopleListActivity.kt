@@ -3,16 +3,20 @@ package cr.ac.utn.census
 import Controller.PersonController
 import Entity.Person
 import Interface.OnItemClickListener
+import Util.CensusAPIService
 import Util.EXTRA_MESSAGE_PERSONID
 import Util.Util
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 
 class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var customAdapter: PersonListAdapter
@@ -29,11 +33,14 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
 
         val recycler =  findViewById<RecyclerView>(R.id.rvperson)
         val personController = PersonController(this)
-        customAdapter = PersonListAdapter(personController.getPeople(), this)
-        val layoutManager = LinearLayoutManager(applicationContext)
-        recycler.layoutManager = layoutManager
-        recycler.adapter = customAdapter
-        customAdapter.notifyDataSetChanged()
+        val selfContext = this
+        lifecycleScope.launch {
+            customAdapter = PersonListAdapter(personController.getPeople(), selfContext)
+            val layoutManager = LinearLayoutManager(applicationContext)
+            recycler.layoutManager = layoutManager
+            recycler.adapter = customAdapter
+            customAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onItemClicked(person: Person) {
@@ -42,4 +49,19 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
         //    ,Toast.LENGTH_LONG).show()
         //Log.i("CONTACT", contact.FullName)
     }
+
+    /*fun getPeople(): List<Person>{
+        var people = mutableListOf<Person>()
+        lifecycleScope.launch {
+            try {
+                val response = CensusAPIService.apiPeople.getAll()
+                // Update UI or log success
+                Log.d("API_Call", "Success: ${response.data}")
+            } catch (e: Exception) {
+                // Handle error
+                Log.e("API_Call", "Error fetching data: ${e.message}")
+            }
+        }
+        return people
+    }*/
 }
