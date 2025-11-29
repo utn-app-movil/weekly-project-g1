@@ -3,11 +3,9 @@ package cr.ac.utn.census
 import Controller.PersonController
 import Entity.Person
 import Interface.OnItemClickListener
-import Util.CensusAPIService
 import Util.EXTRA_MESSAGE_PERSONID
 import Util.Util
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -33,9 +31,10 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
 
         val recycler =  findViewById<RecyclerView>(R.id.rvperson)
         val personController = PersonController(this)
-        val selfContext = this
+        val mycontext = this
+
         lifecycleScope.launch {
-            customAdapter = PersonListAdapter(personController.getPeople(), selfContext)
+            customAdapter = PersonListAdapter(personController.getPeople(), mycontext)
             val layoutManager = LinearLayoutManager(applicationContext)
             recycler.layoutManager = layoutManager
             recycler.adapter = customAdapter
@@ -49,19 +48,4 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
         //    ,Toast.LENGTH_LONG).show()
         //Log.i("CONTACT", contact.FullName)
     }
-
-    /*fun getPeople(): List<Person>{
-        var people = mutableListOf<Person>()
-        lifecycleScope.launch {
-            try {
-                val response = CensusAPIService.apiPeople.getAll()
-                // Update UI or log success
-                Log.d("API_Call", "Success: ${response.data}")
-            } catch (e: Exception) {
-                // Handle error
-                Log.e("API_Call", "Error fetching data: ${e.message}")
-            }
-        }
-        return people
-    }*/
 }

@@ -54,8 +54,4 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-
-    // Lifecycle components (for viewModelScope/lifecycleScope)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0") // Check for latest version
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 }

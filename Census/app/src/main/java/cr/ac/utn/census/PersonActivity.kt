@@ -57,7 +57,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private var month: Int=0
     private var year: Int=0
     private lateinit var menuItemDelete: MenuItem
-    private lateinit var selfContext: Context
+    lateinit var mycontext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,9 +85,9 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         txtAddress= findViewById<EditText>(R.id.txtAddress_person)
         imgPhoto = findViewById<ImageView>(R.id.imgPhoto)
 
-        selfContext = this
-
         resetDate()
+
+        mycontext = this
 
         val personId = intent.getStringExtra(EXTRA_MESSAGE_PERSONID)
         if (personId != null && personId.trim().length > 0) searchPerson(personId)
@@ -160,8 +160,8 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun searchPerson(id: String){
-        try {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            try {
                 val person = personController.getById(id)
                 if (person != null){
                     isEditMode=true
@@ -184,14 +184,14 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                     menuItemDelete.isVisible = true
                     imgPhoto.setImageBitmap(person.Photo)
                 }else{
-                    Toast.makeText(selfContext, getString(R.string.MsgDataNoFound),
+                    Toast.makeText(mycontext, getString(R.string.MsgDataNoFound),
                         Toast.LENGTH_LONG).show()
                 }
+            }catch (e: Exception){
+                cleanScreen()
+                Toast.makeText(mycontext, e.message.toString(),
+                    Toast.LENGTH_LONG).show()
             }
-        }catch (e: Exception){
-            cleanScreen()
-            Toast.makeText(this, e.message.toString(),
-                Toast.LENGTH_LONG).show()
         }
     }
 
@@ -205,6 +205,8 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 && (txtPhone.text.trim().isNotEmpty() && txtPhone.text.trim().length >= 8
                 && txtPhone.text.toString()?.toInt()!! != null && txtPhone.text.toString()?.toInt()!! != 0)
                 && dateparse != null
+
+
     }
 
     private fun cleanScreen(){
@@ -227,12 +229,12 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     fun savePerson(){
-        try {
-            if (isValidationData()){
-                lifecycleScope.launch {
+        lifecycleScope.launch {
+            try {
+                if (isValidationData()){
                     if (personController.getById(txtId.text.toString().trim()) != null
                         && !isEditMode){
-                        Toast.makeText(selfContext, getString(R.string.MsgDuplicateDate)
+                        Toast.makeText(mycontext, getString(R.string.MsgDuplicateDate)
                             , Toast.LENGTH_LONG).show()
                     }else{
                         val person = Person()
@@ -261,31 +263,31 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
                         cleanScreen()
 
-                        Toast.makeText(selfContext, getString(R.string.MsgSaveSuccess)
+                        Toast.makeText(mycontext, getString(R.string.MsgSaveSuccess)
                             , Toast.LENGTH_LONG).show()
                     }
+                }else{
+                    Toast.makeText(mycontext, "Datos incompletos"
+                        , Toast.LENGTH_LONG).show()
                 }
-            }else{
-                Toast.makeText(this, "Datos incompletos"
+            }catch (e: Exception){
+                Toast.makeText(mycontext, e.message.toString()
                     , Toast.LENGTH_LONG).show()
             }
-        }catch (e: Exception){
-            Toast.makeText(this, e.message.toString()
-                , Toast.LENGTH_LONG).show()
         }
     }
 
     fun deletePerson(): Unit{
-        try {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            try {
                 personController.removePerson(txtId.text.toString())
                 cleanScreen()
-                Toast.makeText(selfContext, getString(R.string.MsgDeleteSuccess)
+                Toast.makeText(mycontext, getString(R.string.MsgDeleteSuccess)
+                    , Toast.LENGTH_LONG).show()
+            }catch (e: Exception){
+                Toast.makeText(mycontext, e.message.toString()
                     , Toast.LENGTH_LONG).show()
             }
-        }catch (e: Exception){
-            Toast.makeText(this, e.message.toString()
-                , Toast.LENGTH_LONG).show()
         }
     }
 

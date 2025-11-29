@@ -1,30 +1,24 @@
 package Controller
 
-import Data.IDataManager
-import Data.MemoryDataManager
 import Entity.DTOPerson
 import Entity.Person
 import Util.CensusAPIService
 import Util.Util
 import android.content.Context
-import cr.ac.utn.census.R
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
+import cr.ac.utn.census.R
 import java.time.LocalDate
 
 class PersonController {
-    private var dataManager: IDataManager = MemoryDataManager
-    private var context: Context
+    private  var context: Context
 
-    constructor(context: Context) {
+    constructor(context: Context){
         this.context=context
     }
 
     suspend fun addPerson(person: Person){
         try {
-            val response = CensusAPIService.apiPeople.postPerson(getDTOPersonObject(person))
+            val response = CensusAPIService.apiPeople.postPerson(convertToDTOPersonObject(person))
             if (response.responseCode != 200)
                 throw Exception(response.message)
 
@@ -38,7 +32,7 @@ class PersonController {
 
     suspend fun updatePerson(person: Person){
         try {
-            val response = CensusAPIService.apiPeople.updatePerson(getDTOPersonObject(person))
+            val response = CensusAPIService.apiPeople.updatePerson(convertToDTOPersonObject(person))
             if (response.responseCode != 200)
                 throw Exception(response.message)
         }catch (e: Exception){
@@ -73,7 +67,7 @@ class PersonController {
             person = null
             val response = CensusAPIService.apiPeople.getbyId(id)
             if (response.responseCode != 200)
-                throw Exception(response.message)
+                return person
 
             Log.d("API_Call", "Success: ${response.data}")
             if (response.data.any()){
@@ -103,17 +97,6 @@ class PersonController {
         }
     }
 
-    private fun getDTOPersonObject (person: Person): DTOPerson{
-        val strBirthdate = Util.getDateFormatString(person.Birthday.dayOfMonth
-            , person.Birthday.month.value, person.Birthday.year)
-
-        return DTOPerson(person.ID, person.Name, person.FLastName
-            , person.SLastName, person.Phone, person.Email
-            , strBirthdate, person.Province, person.State
-            , person.District, person.Address
-            , person.Latitude, person.Longitude, "")
-    }
-
     private fun getPersonObject (item: DTOPerson): Person{
         val person = Person()
         person.ID= item.ID
@@ -132,5 +115,16 @@ class PersonController {
             , bDateParse?.dayOfMonth!!)
         //person.Photo= item.Photo
         return person
+    }
+
+    private fun convertToDTOPersonObject (person: Person): DTOPerson{
+        val strBirthdate = Util.getDateFormatString(person.Birthday.dayOfMonth
+            , person.Birthday.month.value, person.Birthday.year)
+
+        return DTOPerson(person.ID, person.Name, person.FLastName
+            , person.SLastName, person.Phone, person.Email
+            , strBirthdate, person.Province, person.State
+            , person.District, person.Address
+            , person.Latitude, person.Longitude, "")
     }
 }
