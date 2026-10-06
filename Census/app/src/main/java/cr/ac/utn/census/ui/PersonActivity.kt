@@ -1,22 +1,17 @@
-package cr.ac.utn.census
+package cr.ac.utn.census.ui
 
-import Controller.PersonController
-import Entity.Person
-import Entity.Province
-import Util.EXTRA_MESSAGE_PERSONID
-import android.app.Activity
+import cr.ac.utn.census.domain.model.Province
+import cr.ac.utn.census.util.EXTRA_MESSAGE_PERSONID
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -26,12 +21,18 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.File
+import cr.ac.utn.census.R
+import cr.ac.utn.census.data.memory.MemoryPersonRepository
+import cr.ac.utn.census.domain.model.Person
+import cr.ac.utn.census.util.Util
+import cr.ac.utn.census.viewmodel.PersonViewModel
 import java.time.LocalDate
 import java.util.Calendar
+import kotlin.compareTo
+import kotlin.text.trim
+import kotlin.toString
 
 class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var txtId: EditText
@@ -46,7 +47,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private lateinit var txtDistrict: EditText
     private lateinit var txtAddress: EditText
     private lateinit var imgPhoto: ImageView
-    private lateinit var personController: PersonController
+    private lateinit var personViewModel: PersonViewModel
     private var isEditMode: Boolean= false
     private var day: Int=0
     private var month: Int=0
@@ -64,7 +65,8 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             insets
         }
 
-        personController = PersonController(this)
+        val repository = MemoryPersonRepository()
+        personViewModel = PersonViewModel(repository)
 
         txtId= findViewById<EditText>(R.id.txtId_person)
         txtName= findViewById<EditText>(R.id.txtName_person)
@@ -82,7 +84,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         resetDate()
 
         val personId = intent.getStringExtra(EXTRA_MESSAGE_PERSONID)
-        if (personId != null && personId.trim().length > 0) searchPerson(personId)
+        if (personId != null && personId.trim().length == 0) searchPerson(personId)
 
         val btnSelectDate = findViewById<ImageButton>(R.id.btnSelectDate_person)
         btnSelectDate.setOnClickListener(View.OnClickListener{view ->
@@ -112,7 +114,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         return when (item.itemId){
             R.id.mnu_save ->{
                 if (isEditMode){
-                    Util.Util.showDialogCondition(this
+                    Util.showDialogCondition(this
                         , getString(R.string.TextSaveActionQuestion)
                         , { savePerson() })
                 }else{
@@ -121,7 +123,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 return true
             }
             R.id.mnu_delete ->{
-                Util.Util.showDialogCondition(this
+                Util.showDialogCondition(this
                     , getString(R.string.TextDeleteActionQuestion)
                     , { deletePerson() })
                 return true
@@ -157,27 +159,27 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun searchPerson(id: String){
         try {
-            val person = personController.getById(id)
+            val person = personViewModel.getPersonById(id)
             if (person != null){
                 isEditMode=true
-                txtId.setText(person.ID.toString())
+                txtId.setText(person.id.toString())
                 txtId.isEnabled=false
-                txtName.setText(person.Name)
-                txtFLastName.setText(person.FLastName)
-                txtSLastName.setText(person.SLastName)
-                txtEmail.setText(person.Email)
-                txtPhone.setText(person.Phone.toString())
-                lbBirthdate.setText(getDateFormatString(person.Birthday.dayOfMonth
-                    , person.Birthday.month.value, person.Birthday.year ))
-                txtProvince.setText(person.Province.Name)
-                txtState.setText(person.State)
-                txtDistrict.setText(person.District)
-                txtAddress.setText(person.Address)
-                year = person.Birthday.year
-                month = person.Birthday.month.value - 1
-                day = person.Birthday.dayOfMonth
+                txtName.setText(person.name)
+                txtFLastName.setText(person.firstLastName)
+                txtSLastName.setText(person.secondLastName)
+                txtEmail.setText(person.email)
+                txtPhone.setText(person.phone.toString())
+                lbBirthdate.setText(getDateFormatString(person.birthday.dayOfMonth
+                    , person.birthday.month.value, person.birthday.year ))
+                txtProvince.setText(person.province.name)
+                txtState.setText(person.state)
+                txtDistrict.setText(person.district)
+                txtAddress.setText(person.address)
+                year = person.birthday.year
+                month = person.birthday.month.value - 1
+                day = person.birthday.dayOfMonth
                 //menuItemDelete.isVisible = true
-                imgPhoto.setImageBitmap(person.Photo)
+                imgPhoto.setImageBitmap(person.photo)
             }else{
                 Toast.makeText(this, getString(R.string.MsgDataNoFound),
                     Toast.LENGTH_LONG).show()
@@ -190,7 +192,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     fun isValidationData(): Boolean{
-        val dateparse = Util.Util.parseStringToDateModern(lbBirthdate.text.toString(), "dd/MM/yyyy")
+        val dateparse = Util.parseStringToDateModern(lbBirthdate.text.toString(), "dd/MM/yyyy")
         return txtId.text.trim().isNotEmpty() && txtName.text.trim().isNotEmpty()
                 && txtFLastName.text.trim().isNotEmpty() && txtSLastName.text.trim().isNotEmpty()
                 && txtEmail.text.trim().isNotEmpty() && lbBirthdate.text.trim().isNotEmpty()
@@ -225,34 +227,35 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     fun savePerson(){
         try {
             if (isValidationData()){
-                if (personController.getById(txtId.text.toString().trim()) != null
+                val person = personViewModel.getPersonById(txtId.text.toString().trim())
+                if (person != null
                     && !isEditMode){
                     Toast.makeText(this, getString(R.string.MsgDuplicateDate)
                         , Toast.LENGTH_LONG).show()
                 }else{
-                    val person = Person()
-                    person.ID = txtId.text.toString()
-                    person.Name = txtName.text.toString()
-                    person.FLastName = txtFLastName.text.toString()
-                    person.SLastName = txtSLastName.text.toString()
-                    person.Email = txtEmail.text.toString()
-                    person.Phone = txtPhone.text.toString().toInt()
-                    person.Photo = (imgPhoto?.drawable as BitmapDrawable).bitmap
-                    val bDateParse = Util.Util.parseStringToDateModern(lbBirthdate.text.toString(),
+                    val bDateParse = Util.parseStringToDateModern(lbBirthdate.text.toString(),
                         "dd/MM/yyyy")
-                    person.Birthday = LocalDate.of(bDateParse?.year!!, bDateParse.month.value
-                            , bDateParse?.dayOfMonth!!)
-                    val province = Province()
-                    province.Name= txtProvince.text.toString()
-                    person.Province = province
-                    person.State = txtState.text.toString()
-                    person.District = txtDistrict.text.toString()
-                    person.Address= txtAddress.text.toString()
+                    val province = Province(txtProvince.text.toString(), listOf<String>())
+
+                    val person = Person(txtId.text.toString(),
+                    txtName.text.toString(),
+                     txtFLastName.text.toString(),
+                     txtSLastName.text.toString(),
+                    txtPhone.text.toString().toInt(),
+                    txtEmail.text.toString(),
+                    LocalDate.of(bDateParse?.year!!, bDateParse.month.value
+                            , bDateParse?.dayOfMonth!!),
+                    province,
+                    txtState.text.toString(),
+                    txtDistrict.text.toString(),
+                    txtAddress.text.toString(),
+                    0.0, 0.0,
+                    (imgPhoto?.drawable as BitmapDrawable).bitmap)
 
                     if (!isEditMode)
-                        personController.addPerson(person)
+                        personViewModel.savePerson(person)
                     else
-                        personController.updatePerson(person)
+                        personViewModel.updatePerson(person)
 
                     cleanScreen()
 
@@ -271,7 +274,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     fun deletePerson(): Unit{
         try {
-            personController.removePerson(txtId.text.toString())
+            personViewModel.deletePerson(txtId.text.toString())
             cleanScreen()
             Toast.makeText(this, getString(R.string.MsgDeleteSuccess)
                 , Toast.LENGTH_LONG).show()
@@ -300,7 +303,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val data: Intent? = result.data
             // Handle the selected image URI here
             data?.data?.let { imageUri ->

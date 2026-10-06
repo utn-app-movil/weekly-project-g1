@@ -1,6 +1,6 @@
-package Interface
+package cr.ac.utn.census.ui
 
-import Entity.Person
+import cr.ac.utn.census.domain.model.Person
 
 interface OnItemClickListener {
     fun onItemClicked (person: Person)

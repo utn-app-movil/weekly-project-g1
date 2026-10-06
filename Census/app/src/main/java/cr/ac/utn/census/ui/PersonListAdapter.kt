@@ -1,13 +1,13 @@
-package cr.ac.utn.census
+package cr.ac.utn.census.ui
 
 import Entity.Person
-import Interface.OnItemClickListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import cr.ac.utn.census.R
 
 class CustomViewHolder (view: View): RecyclerView.ViewHolder(view){
     var txtFullName: TextView = view.findViewById(R.id.txtPersonNameItem_recycler)

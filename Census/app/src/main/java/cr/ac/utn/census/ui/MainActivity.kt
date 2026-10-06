@@ -1,4 +1,4 @@
-package cr.ac.utn.census
+package cr.ac.utn.census.ui
 
 import android.os.Bundle
 import android.view.View
@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import cr.ac.utn.census.R
+import cr.ac.utn.census.util.Util
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +23,13 @@ class MainActivity : AppCompatActivity() {
 
         val btnPerson = findViewById<Button>(R.id.btnPerson_main)
         btnPerson.setOnClickListener(View.OnClickListener{ view->
-            Util.Util.openActivity(this
+            Util.openActivity(this
                 , PersonActivity::class.java)
         })
 
         val btnPersonList_main = findViewById<Button>(R.id.btnPersonList_main)
         btnPersonList_main.setOnClickListener(View.OnClickListener{ view->
-            Util.Util.openActivity(this
+            Util.openActivity(this
                 , PeopleListActivity::class.java)
         })
     }
