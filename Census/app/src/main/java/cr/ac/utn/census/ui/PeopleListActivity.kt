@@ -1,6 +1,5 @@
 package cr.ac.utn.census.ui
 
-import Entity.Person
 import cr.ac.utn.census.util.EXTRA_MESSAGE_PERSONID
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cr.ac.utn.census.R
+import cr.ac.utn.census.domain.model.Person
+import cr.ac.utn.census.util.Util
+import cr.ac.utn.census.viewmodel.PersonViewModel
 
 class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var customAdapter: PersonListAdapter
@@ -25,8 +27,8 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
         }
 
         val recycler =  findViewById<RecyclerView>(R.id.rvperson)
-        val personController = PersonController(this)
-        customAdapter = PersonListAdapter(personController.getPeople(), this)
+        val personVM = Util.buildPersonViewModel()
+        customAdapter = PersonListAdapter(personVM.getPeople(), this)
         val layoutManager = LinearLayoutManager(applicationContext)
         recycler.layoutManager = layoutManager
         recycler.adapter = customAdapter
@@ -34,9 +36,6 @@ class PeopleListActivity : AppCompatActivity(), OnItemClickListener {
     }
 
     override fun onItemClicked(person: Person) {
-        util.openActivity(this, PersonActivity::class.java, EXTRA_MESSAGE_PERSONID, person.ID)
-        //Toast.makeText(this,"Person name ${person.FullName()} \n Phone:${person.Phone.toString()}"
-        //    ,Toast.LENGTH_LONG).show()
-        //Log.i("CONTACT", contact.FullName)
+        Util.openActivity(this, PersonActivity::class.java, EXTRA_MESSAGE_PERSONID, person.id)
     }
 }

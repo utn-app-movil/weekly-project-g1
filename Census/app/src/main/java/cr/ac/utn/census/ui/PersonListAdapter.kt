@@ -1,6 +1,5 @@
 package cr.ac.utn.census.ui
 
-import Entity.Person
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import cr.ac.utn.census.R
+import cr.ac.utn.census.domain.model.Person
 
 class CustomViewHolder (view: View): RecyclerView.ViewHolder(view){
     var txtFullName: TextView = view.findViewById(R.id.txtPersonNameItem_recycler)
@@ -16,10 +16,10 @@ class CustomViewHolder (view: View): RecyclerView.ViewHolder(view){
     var imgPhoto: ImageView = view.findViewById(R.id.imgPhoto_ItemRecycler)
 
     fun bind (item: Person, clickListener: OnItemClickListener){
-        txtFullName.setText(item.FullName().toString())
-        txtAddress.setText(item.Address.toString())
-        txtPhone.setText(item.Phone.toString())
-        imgPhoto.setImageBitmap(item.Photo)
+        txtFullName.setText("$item.name().toString() $item.firstLastName().toString() $item.secondLastName().toString()")
+        txtAddress.setText(item.address.toString())
+        txtPhone.setText(item.phone.toString())
+        imgPhoto.setImageBitmap(item.photo)
 
         itemView.setOnClickListener{
             clickListener.onItemClicked(item)

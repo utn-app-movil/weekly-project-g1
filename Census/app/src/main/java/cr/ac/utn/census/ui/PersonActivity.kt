@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import cr.ac.utn.census.R
-import cr.ac.utn.census.data.memory.MemoryPersonRepository
 import cr.ac.utn.census.domain.model.Person
 import cr.ac.utn.census.util.Util
 import cr.ac.utn.census.viewmodel.PersonViewModel
@@ -65,8 +64,7 @@ class PersonActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             insets
         }
 
-        val repository = MemoryPersonRepository()
-        personViewModel = PersonViewModel(repository)
+        personViewModel = Util.buildPersonViewModel()
 
         txtId= findViewById<EditText>(R.id.txtId_person)
         txtName= findViewById<EditText>(R.id.txtName_person)

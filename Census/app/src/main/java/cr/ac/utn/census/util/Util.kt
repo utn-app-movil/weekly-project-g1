@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import cr.ac.utn.census.R
+import cr.ac.utn.census.data.memory.MemoryPersonRepository
+import cr.ac.utn.census.viewmodel.PersonViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,6 +23,11 @@ class Util {
             val intent= Intent(context
                     , objClass).apply { putExtra(extraName, value)}
             context.startActivity(intent)
+        }
+
+        fun buildPersonViewModel():PersonViewModel{
+            val repository = MemoryPersonRepository()
+            return PersonViewModel(repository)
         }
 
         fun parseStringToDateModern(dateString: String, pattern: String): LocalDate? {
