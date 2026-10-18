@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Census">
         <activity
-            android:name=".PeopleListActivity"
+            android:name=".ui.PeopleListActivity"
             android:exported="false" />
         <!--
         <provider
@@ -30,7 +30,7 @@
         </provider>
         -->
         <activity
-            android:name=".PersonActivity"
+            android:name=".ui.PersonActivity"
             android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
